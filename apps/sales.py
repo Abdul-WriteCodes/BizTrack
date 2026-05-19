@@ -106,9 +106,10 @@ def page_dashboard():
 
     # ── Charts ──
     if not sales_df.empty:
-        col_left, col_right = st.columns([3, 2])
+        with st.expander("📈 Revenue Trend — Last 30 Days", expanded=True):
+          col_left, col_right = st.columns([3, 2])
 
-        with col_left:
+          with col_left:
             section_header("Revenue Trend — Last 30 Days")
             trend_df = sales_df.copy()
             last30   = trend_df[trend_df["sale_date"] >= (now - timedelta(days=30))]
@@ -145,7 +146,7 @@ def page_dashboard():
             st.plotly_chart(fig, use_container_width=True)
             st.caption("■ Gold = above average  ■ Purple = below average")
 
-        with col_right:
+          with col_right:
             section_header("Sales by Payment Method")
             pm_df = sales_df.groupby("payment_method")["total_amount"].sum().reset_index()
             if not pm_df.empty:
@@ -159,23 +160,24 @@ def page_dashboard():
                 )
                 st.plotly_chart(fig2, use_container_width=True)
 
-        section_header("Top Selling Products (by Revenue)")
-        top_df = (
-            sales_df.groupby("product_name")["total_amount"]
-            .sum().reset_index()
-            .sort_values("total_amount", ascending=True)
-            .tail(8)
-        )
-        if not top_df.empty:
-            fig3 = px.bar(top_df, x="total_amount", y="product_name", orientation="h",
-                          labels={"total_amount": "Revenue (₦)", "product_name": ""},
-                          color_discrete_sequence=["#6366f1"])
-            fig3.update_layout(
-                margin=dict(l=0, r=0, t=10, b=0),
-                plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
-                xaxis=dict(tickprefix="₦", gridcolor="#1F2D3D"), height=300,
+        with st.expander("🏆 Top Selling Products", expanded=True):
+            section_header("Top Selling Products (by Revenue)")
+            top_df = (
+                sales_df.groupby("product_name")["total_amount"]
+                .sum().reset_index()
+                .sort_values("total_amount", ascending=True)
+                .tail(8)
             )
-            st.plotly_chart(fig3, use_container_width=True)
+            if not top_df.empty:
+                fig3 = px.bar(top_df, x="total_amount", y="product_name", orientation="h",
+                              labels={"total_amount": "Revenue (₦)", "product_name": ""},
+                              color_discrete_sequence=["#6366f1"])
+                fig3.update_layout(
+                    margin=dict(l=0, r=0, t=10, b=0),
+                    plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+                    xaxis=dict(tickprefix="₦", gridcolor="#1F2D3D"), height=300,
+                )
+                st.plotly_chart(fig3, use_container_width=True)
     else:
         st.info("📭 No sales yet. Record your first sale to see analytics here.")
 
