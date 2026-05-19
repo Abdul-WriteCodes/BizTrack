@@ -545,6 +545,7 @@ def page_record_sale():
     st.markdown("---")
     section_header("Today's Sales")
     today       = datetime.now().date()
+    sales_df    = get_sales_df(business_id)
     today_sales = (sales_df[sales_df["sale_date"].dt.date == today]
                    if not sales_df.empty else pd.DataFrame())
     kpi_card("Today's Revenue",
