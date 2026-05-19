@@ -285,7 +285,7 @@ def _page_pending_payment(user: dict):
                 st.markdown(f"**₦{amount:,}**")
                 st.markdown(f"`{email}`")
 
-        st.caption("🔒 Secure payment via Card/Bank Transfer. Activated within 24 hours.")
+        st.caption("🔒 Make secure payment via Card/Bank Transfer. Activated within 24 hours.")
         st.link_button(
             f"💳 Pay ₦{amount:,} via Flutterwave 👉→",
             url=fw_link, width='stretch', type="primary",
