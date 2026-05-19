@@ -83,17 +83,17 @@ def page_expenses():
                     .sort_values("amount", ascending=False)
                 )
                 if not cat_breakdown.empty:
-                    fig = px.bar(
-                        cat_breakdown, x="category", y="amount",
-                        labels={"amount": "Amount (₦)", "category": "Category"},
-                        color_discrete_sequence=["#ef4444"],
-                        title="Expenses by Category",
-                    )
-                    fig.update_layout(
-                        plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
-                        margin=dict(l=0, r=0, t=40, b=0), height=280,
-                    )
-                    st.plotly_chart(fig, use_container_width=True)
+                    with st.expander("📊 Expenses by Category", expanded=True):
+                        fig = px.bar(
+                            cat_breakdown, x="category", y="amount",
+                            labels={"amount": "Amount (₦)", "category": "Category"},
+                            color_discrete_sequence=["#ef4444"],
+                        )
+                        fig.update_layout(
+                            plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+                            margin=dict(l=0, r=0, t=10, b=0), height=280,
+                        )
+                        st.plotly_chart(fig, use_container_width=True)
 
                 # Search
                 exp_search = st.text_input("🔍 Search expenses", key="exp_search",
@@ -400,7 +400,8 @@ display:flex;align-items:center;justify-content:space-between;">
                                gridcolor="rgba(255,255,255,0.06)", tickfont=dict(size=11)),
                     bargap=0.2, bargroupgap=0.05,
                 )
-                st.plotly_chart(fig, use_container_width=True)
+                with st.expander("📈 Monthly Performance Chart", expanded=True):
+                    st.plotly_chart(fig, use_container_width=True)
 
                 with st.expander("📋 View monthly breakdown table"):
                     dm = monthly[["month_label","revenue","cost","profit",
@@ -415,20 +416,21 @@ display:flex;align-items:center;justify-content:space-between;">
         st.markdown("---")
         section_header("Category Performance")
         if not insights["category_revenue"].empty:
-            cat_fig = px.bar(
-                insights["category_revenue"].sort_values("total_amount"),
-                x="total_amount", y="category", orientation="h",
-                labels={"total_amount":"Revenue (₦)","category":""},
-                color_discrete_sequence=["#F5A623"],
-            )
-            cat_fig.update_layout(
-                plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
-                margin=dict(l=0, r=0, t=10, b=0),
-                height=max(200, len(insights["category_revenue"]) * 45),
-                xaxis=dict(tickprefix="₦", tickformat=",.0f",
-                           gridcolor="rgba(255,255,255,0.06)"),
-            )
-            st.plotly_chart(cat_fig, use_container_width=True)
+            with st.expander("🗂️ Revenue by Category", expanded=True):
+                cat_fig = px.bar(
+                    insights["category_revenue"].sort_values("total_amount"),
+                    x="total_amount", y="category", orientation="h",
+                    labels={"total_amount":"Revenue (₦)","category":""},
+                    color_discrete_sequence=["#F5A623"],
+                )
+                cat_fig.update_layout(
+                    plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+                    margin=dict(l=0, r=0, t=10, b=0),
+                    height=max(200, len(insights["category_revenue"]) * 45),
+                    xaxis=dict(tickprefix="₦", tickformat=",.0f",
+                               gridcolor="rgba(255,255,255,0.06)"),
+                )
+                st.plotly_chart(cat_fig, use_container_width=True)
         else:
             st.info("No category data yet.")
 
@@ -436,37 +438,38 @@ display:flex;align-items:center;justify-content:space-between;">
     # Tab 2 — Products
     # ══════════════════════
     with tab2:
-        col_l, col_r = st.columns(2)
-        with col_l:
-            section_header("Top Products by Revenue")
-            if not insights["top_products_revenue"].empty:
-                fig = px.bar(
-                    insights["top_products_revenue"].sort_values("total_amount"),
-                    x="total_amount", y="product_name", orientation="h",
-                    labels={"total_amount":"Revenue (₦)","product_name":""},
-                    color_discrete_sequence=["#6366f1"],
-                )
-                fig.update_layout(
-                    plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
-                    margin=dict(l=0, r=0, t=10, b=0), height=350,
-                    xaxis=dict(tickprefix="₦"),
-                )
-                st.plotly_chart(fig, use_container_width=True)
+        with st.expander("🏆 Top Products by Revenue", expanded=True):
+            col_l, col_r = st.columns(2)
+            with col_l:
+                section_header("By Revenue")
+                if not insights["top_products_revenue"].empty:
+                    fig = px.bar(
+                        insights["top_products_revenue"].sort_values("total_amount"),
+                        x="total_amount", y="product_name", orientation="h",
+                        labels={"total_amount":"Revenue (₦)","product_name":""},
+                        color_discrete_sequence=["#6366f1"],
+                    )
+                    fig.update_layout(
+                        plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+                        margin=dict(l=0, r=0, t=10, b=0), height=350,
+                        xaxis=dict(tickprefix="₦"),
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
 
-        with col_r:
-            section_header("Top Products by Quantity Sold")
-            if not insights["top_products_qty"].empty:
-                fig2 = px.bar(
-                    insights["top_products_qty"].sort_values("quantity"),
-                    x="quantity", y="product_name", orientation="h",
-                    labels={"quantity":"Units Sold","product_name":""},
-                    color_discrete_sequence=["#10b981"],
-                )
-                fig2.update_layout(
-                    plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
-                    margin=dict(l=0, r=0, t=10, b=0), height=350,
-                )
-                st.plotly_chart(fig2, use_container_width=True)
+            with col_r:
+                section_header("By Quantity Sold")
+                if not insights["top_products_qty"].empty:
+                    fig2 = px.bar(
+                        insights["top_products_qty"].sort_values("quantity"),
+                        x="quantity", y="product_name", orientation="h",
+                        labels={"quantity":"Units Sold","product_name":""},
+                        color_discrete_sequence=["#10b981"],
+                    )
+                    fig2.update_layout(
+                        plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+                        margin=dict(l=0, r=0, t=10, b=0), height=350,
+                    )
+                    st.plotly_chart(fig2, use_container_width=True)
 
         section_header("⚠️ Slow-Moving Products (Last 30 Days)")
         if not insights["slow_movers"].empty:
@@ -529,25 +532,26 @@ display:flex;align-items:center;justify-content:space-between;">
     with tab4:
         section_header("Revenue by Day of Week")
         if not insights["weekday_performance"].empty:
-            wd     = insights["weekday_performance"]
-            colors = [
-                "#ef4444" if r == wd["revenue"].min()
-                else ("#10b981" if r == wd["revenue"].max() else "#6366f1")
-                for r in wd["revenue"]
-            ]
-            fig = go.Figure(go.Bar(
-                x=wd["weekday"], y=wd["revenue"],
-                marker_color=colors,
-                text=[fmt_naira(v) for v in wd["revenue"]],
-                textposition="outside",
-            ))
-            fig.update_layout(
-                plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
-                margin=dict(l=0, r=0, t=10, b=0),
-                yaxis=dict(tickprefix="₦", gridcolor="rgba(255,255,255,0.06)"),
-                height=350,
-            )
-            st.plotly_chart(fig, use_container_width=True)
+            with st.expander("📅 Weekday Revenue Chart", expanded=True):
+                wd     = insights["weekday_performance"]
+                colors = [
+                    "#ef4444" if r == wd["revenue"].min()
+                    else ("#10b981" if r == wd["revenue"].max() else "#6366f1")
+                    for r in wd["revenue"]
+                ]
+                fig = go.Figure(go.Bar(
+                    x=wd["weekday"], y=wd["revenue"],
+                    marker_color=colors,
+                    text=[fmt_naira(v) for v in wd["revenue"]],
+                    textposition="outside",
+                ))
+                fig.update_layout(
+                    plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+                    margin=dict(l=0, r=0, t=10, b=0),
+                    yaxis=dict(tickprefix="₦", gridcolor="rgba(255,255,255,0.06)"),
+                    height=350,
+                )
+                st.plotly_chart(fig, use_container_width=True)
 
             if insights["best_day"] and insights["worst_day"]:
                 col1, col2 = st.columns(2)
@@ -737,24 +741,25 @@ def page_admin():
     with tab3:
         if not payments_df.empty:
             section_header("Monthly Revenue Growth")
-            payments_df["month"] = payments_df["payment_date"].dt.to_period("M")
-            mrr = (payments_df.groupby("month")["amount"].sum()
-                   .reset_index()
-                   .sort_values("month"))
-            mrr["month_label"] = mrr["month"].astype(str)
-            fig = go.Figure(go.Bar(
-                x=mrr["month_label"], y=mrr["amount"],
-                marker_color="#F5A623",
-                hovertemplate="%{x}<br>₦%{y:,.0f}<extra></extra>",
-            ))
-            fig.update_layout(
-                plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
-                margin=dict(l=0, r=0, t=20, b=0),
-                yaxis=dict(tickprefix="₦", gridcolor="rgba(255,255,255,0.06)"),
-                xaxis=dict(type="category", tickangle=-45),
-                height=300,
-            )
-            st.plotly_chart(fig, use_container_width=True)
+            with st.expander("💰 Platform MRR Chart", expanded=True):
+                payments_df["month"] = payments_df["payment_date"].dt.to_period("M")
+                mrr = (payments_df.groupby("month")["amount"].sum()
+                       .reset_index()
+                       .sort_values("month"))
+                mrr["month_label"] = mrr["month"].astype(str)
+                fig = go.Figure(go.Bar(
+                    x=mrr["month_label"], y=mrr["amount"],
+                    marker_color="#F5A623",
+                    hovertemplate="%{x}<br>₦%{y:,.0f}<extra></extra>",
+                ))
+                fig.update_layout(
+                    plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+                    margin=dict(l=0, r=0, t=20, b=0),
+                    yaxis=dict(tickprefix="₦", gridcolor="rgba(255,255,255,0.06)"),
+                    xaxis=dict(type="category", tickangle=-45),
+                    height=300,
+                )
+                st.plotly_chart(fig, use_container_width=True)
         else:
             st.info("No payment data yet.")
 
