@@ -288,9 +288,9 @@ def _page_pending_payment(user: dict):
         st.caption("🔒 Secure payment via Card/Bank Transfer. Activated within 24 hours.")
         st.link_button(
             f"💳 Pay ₦{amount:,} via Flutterwave →",
-            url=fw_link, use_container_width=True, type="primary",
+            url=fw_link, width='stretch', type="primary",
         )
-        if st.button("← Back to Sign In", use_container_width=True, type="primary"):
+        if st.button("← Back to Sign In", width='content', type="primary"):
             sign_out()
             st.rerun()
         st.caption("Already paid? Your account will be activated shortly✅️.")
@@ -326,6 +326,6 @@ Your access period has ended. Renew to continue using BizTrack.</div>
             url=PAYMENT_DETAILS["flutterwave_yearly"],
             use_container_width=True,
         )
-        if st.button("Sign Out", use_container_width=True):
+        if st.button("Sign Out", width='stretch'):
             sign_out()
             st.rerun()
