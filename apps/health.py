@@ -100,7 +100,7 @@ def page_expenses():
                                            placeholder="Filter by description…")
                 if exp_search:
                     filtered = filtered[
-                        filtered["expense_name"].str.contains(exp_search, case=False, na=False)
+                        filtered["description"].str.contains(exp_search, case=False, na=False)
                     ]
 
                 # Pagination
@@ -118,7 +118,7 @@ def page_expenses():
                 for _, r in page_slice.iterrows():
                     exp_id = r["expense_id"]
                     with st.expander(
-                        f"**{r['expense_name']}** | {r['category']} | "
+                        f"**{r['description']}** | {r['category']} | "
                         f"{fmt_naira(r['amount'])} | "
                         f"{r['expense_date'].strftime('%d %b %Y') if pd.notna(r['expense_date']) else ''}",
                         expanded=False,
@@ -127,7 +127,7 @@ def page_expenses():
                                      "Marketing","Maintenance","Taxes","Miscellaneous"]
                         with st.form(f"edit_exp_{exp_id}"):
                             ef1, ef2   = st.columns(2)
-                            new_name   = ef1.text_input("Description", value=r["expense_name"])
+                            new_name   = ef1.text_input("Description", value=r["description"])
                             cat_idx    = _EXP_CATS.index(r["category"]) if r["category"] in _EXP_CATS else 0
                             new_cat    = ef2.selectbox("Category", _EXP_CATS, index=cat_idx)
                             new_amt    = ef1.number_input("Amount (₦)", value=safe_float(r["amount"]),
@@ -140,7 +140,7 @@ def page_expenses():
 
                         if save_exp:
                             ok = db_update(TBL_EXPENSES, "expense_id", exp_id, {
-                                "expense_name": new_name.strip(),
+                                "description": new_name.strip(),
                                 "category":     new_cat,
                                 "amount":       new_amt,
                                 "expense_date": str(new_date),
@@ -212,7 +212,7 @@ def page_expenses():
                 ok = db_insert(TBL_EXPENSES, {
                     "expense_id":   gen_id("EXP"),
                     "business_id":  business_id,
-                    "expense_name": exp_name.strip(),
+                    "description": exp_name.strip(),
                     "category":     category,
                     "amount":       amount,
                     "expense_date": str(expense_date),
