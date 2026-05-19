@@ -267,7 +267,7 @@ def _page_pending_payment(user: dict):
                     unsafe_allow_html=True)
         st.markdown(
             "<div style='text-align:center;font-size:1.4rem;font-weight:800;"
-            "color:#F0F4F8;margin-bottom:0.25rem;'>Account created!</div>",
+            "color:#10B981;margin-bottom:0.25rem;'>Account created!</div>",
             unsafe_allow_html=True)
         st.markdown(
             "<div style='text-align:center;color:#8BA0B8;font-size:0.9rem;"
@@ -285,15 +285,15 @@ def _page_pending_payment(user: dict):
                 st.markdown(f"**₦{amount:,}**")
                 st.markdown(f"`{email}`")
 
-        st.caption("🔒 Secure payment via Flutterwave. Activated within 24 hours.")
+        st.caption("🔒 Secure payment via Card/Bank Transfer. Activated within 24 hours.")
         st.link_button(
             f"💳 Pay ₦{amount:,} via Flutterwave →",
             url=fw_link, use_container_width=True, type="primary",
         )
-        if st.button("← Back to Sign In", use_container_width=True):
+        if st.button("← Back to Sign In", use_container_width=True, type="primary"):
             sign_out()
             st.rerun()
-        st.caption("Already paid? Your account will be activated shortly.")
+        st.caption("Already paid? Your account will be activated shortly✅️.")
 
 
 def _page_expired(user: dict):
