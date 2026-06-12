@@ -30,108 +30,28 @@ It replaces notebooks, calculators, and scattered WhatsApp notes with a unified 
   >- Recent deliveries panel: Quick view of the latest stock arrivals
   >- Concurrent-use stock guard: Prevents overselling when multiple users are active
 
-### 🧠 Business Health
-- **Revenue dashboard** — daily, weekly, and monthly revenue with trend charts
-- **Profit & loss** — gross profit, net profit, and expense breakdown
-- **Top products** — identify your best and worst performing products
-- **Expense tracker** — log and categorise business expenses
-- **Insights** — actionable business intelligence from your sales data
+- 🧠 Business Health
+  >- Revenue dashboard: Daily, weekly, and monthly revenue with trend charts
+  >- Profit & loss: Gross profit, net profit, and expense breakdown
+  >- Top products: Identify your best and worst performing products
+  >- Expense tracker: Log and categorise business expenses
+  >- Insights: Actionable business intelligence from your sales data
 
-### 📒 Debtors Ledger
-- **Credit sale tracking** — every part payment and full credit sale is automatically logged
-- **Outstanding balance view** — see every customer's current balance sorted by oldest first
-- **Instalment recording** — log payments against open debts as customers pay
-- **WhatsApp debt reminders** — send polite payment reminders to customers in one tap
-- **Payment history** — full audit trail of every instalment per customer
-- **Manual settle** — mark debts as settled for payments made outside the app
+- 📕 Debtors Ledger
+  >- Credit sale tracking: Every part payment and full credit sale is automatically logged
+  >- Outstanding balance view: See every customer's current balance sorted by oldest first
+  >- Instalment recording: Log payments against open debts as customers pay
+  >- WhatsApp debt reminders: Send polite payment reminders to customers in one tap
+  >- Payment history: Full audit trail of every instalment per customer
+  >- Manual settle: Mark debts as settled for payments made outside the app
 
-### 🛡️ Admin Panel
-- **User management** — manage business users and subscription status
-- **Subscription expiry sweep** — automated review of trial and subscription states
-- **PIN management** — secure void operations with PIN protection
+
 
 ---
 
-## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | [Streamlit](https://streamlit.io) >= 1.35.0 |
-| Backend / Database | [Supabase](https://supabase.com) (PostgreSQL + Auth) |
-| PDF Generation | ReportLab >= 4.1.0 |
-| Charts | Plotly >= 5.18.0 |
-| Data Processing | Pandas >= 2.1.0 |
-| Auth | bcrypt >= 4.1.0 |
-| Language | Python 3.10+ |
 
----
 
-## Project Structure
-
-```
-BizTrack-OS/
-│
-├── suite_home.py           # Main entry point — routing, auth, sidebar
-│
-├── apps/
-│   ├── sales.py            # Sales Management module
-│   ├── inventory.py        # Inventory Management module
-│   ├── health.py           # Business Health + Debtors Ledger + Admin
-│   └── __innit__.py
-│
-├── shared/
-│   ├── db.py               # Supabase data layer — all queries and helpers
-│   ├── auth.py             # Authentication, session, subscription logic
-│   ├── theme.py            # Global CSS and UI components
-│   └── __innit__.py
-│
-├── assets/
-│   ├── DejaVuSans.ttf      # Font for PDF receipts
-│   └── DejaVuSans-Bold.ttf
-│
-├── .streamlit/
-│   └── config.toml         # Theme configuration
-│
-└── requirements.txt
-```
-
----
-
-## Getting Started
-
-### Prerequisites
-- Python 3.10 or higher
-- A [Supabase](https://supabase.com) project with the required tables (see Database Setup below)
-- Git
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/Abdul-WriteCodes/BizTrack-OS.git
-cd BizTrack-OS
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run the app
-streamlit run suite_home.py
-```
-
-### Secrets Configuration
-
-Create a `.streamlit/secrets.toml` file in the project root:
-
-```toml
-[supabase]
-url         = "https://your-project-ref.supabase.co"
-anon_key    = "your-anon-key"
-service_key = "your-service-role-key"
-```
-
-> ⚠️ Never commit `secrets.toml` to version control. Add it to `.gitignore`.
-
----
 
 ## Database Setup
 
