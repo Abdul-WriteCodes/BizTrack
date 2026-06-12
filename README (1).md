@@ -1,16 +1,21 @@
-# BizTrack-OS 📊
+# BizTrack-OS📒
 
-> **Smart business management for Nigerian SMEs.**
-> Record sales · Track inventory · Monitor business health — all in one place.
-
-BizTrack-OS is a cloud-based business operating system built specifically for small and medium-sized businesses in Nigeria. It replaces notebooks, calculators, and scattered WhatsApp notes with a unified platform that gives business owners real-time visibility into their sales, stock levels, expenses, profits, and outstanding debts.
+BizTrack-OS is a cloud-based business operating system built specifically for small and medium-sized businesses in Nigeria. 
 
 ---
+# The Problem
+
+Most Nigerian small businesses run on notebooks, memory, and manual calculations — leaving owners with no clear picture of their daily sales, stock levels, profits, or outstanding debts. Existing software solutions are either priced in dollars, built for Western workflows, or too complex for the average SME owner to use.
+
+# The Solution
+BizTrack-OS was built to close that gap — an affordable, mobile-first business operating system designed around how Nigerian business owners actually work.
+
+It replaces notebooks, calculators, and scattered WhatsApp notes with a unified platform that gives business owners real-time visibility into their sales, stock levels, expenses, profits, and outstanding debts.
 
 ## Features
 
-### 💰 Sales Management
-- **Multi-item cart** — add multiple products to a single sale with quantity and negotiated pricing
+- 💰 Sales Management
+  >- Multi-item cart** — add multiple products to a single sale with quantity and negotiated pricing
 - **PDF receipt generation** — auto-generated A6/thermal-ready receipts with business branding
 - **WhatsApp receipt sharing** — send receipts to customers in one tap
 - **Part payment & credit sales** — record full payments, part payments, and full credit sales
