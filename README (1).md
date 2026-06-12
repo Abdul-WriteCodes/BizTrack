@@ -15,20 +15,20 @@ It replaces notebooks, calculators, and scattered WhatsApp notes with a unified 
 ## Features
 
 - 💰 Sales Management
-  >- Multi-item cart** — add multiple products to a single sale with quantity and negotiated pricing
-- **PDF receipt generation** — auto-generated A6/thermal-ready receipts with business branding
-- **WhatsApp receipt sharing** — send receipts to customers in one tap
-- **Part payment & credit sales** — record full payments, part payments, and full credit sales
-- **Sales history** — full transaction log with search, filter, and void (PIN-protected) capability
-- **Supplier traceability** — track which supplier each restock came from
+  >- Multi-item cart: Add multiple products to a single sale with quantity and negotiated pricing
+  >- PDF receipt generation: Auto-generated A6/thermal-ready receipts with business branding
+  >- WhatsApp receipt sharing: Send receipts to customers in one tap
+  >- Part payment & credit sales: Record full payments, part payments, and full credit sales
+  >- Sales history: Full transaction log with search, filter, and void (PIN-protected) capability
+  >- Supplier traceability: Track which supplier each restock came from
 
-### 📦 Inventory Management
-- **Live stock levels** — stock auto-deducts on every sale
-- **Reorder alerts** — get notified when products hit their reorder threshold
-- **Stockout projection** — see how many days until a product runs out based on sales velocity
-- **Restock log** — log every delivery with supplier details and quantities
-- **Recent deliveries panel** — quick view of the latest stock arrivals
-- **Concurrent-use stock guard** — prevents overselling when multiple users are active
+- 📦 Inventory Management
+  >- Live stock levels: Stock auto-deducts on every sale
+  >- Reorder alerts: Get notified when products hit their reorder threshold
+  >- Stockout projection: See how many days until a product runs out based on sales velocity
+  >- Restock log: Log every delivery with supplier details and quantities
+  >- Recent deliveries panel: Quick view of the latest stock arrivals
+  >- Concurrent-use stock guard: Prevents overselling when multiple users are active
 
 ### 🧠 Business Health
 - **Revenue dashboard** — daily, weekly, and monthly revenue with trend charts
