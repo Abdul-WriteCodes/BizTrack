@@ -12,7 +12,7 @@ BizTrack-OS was built to close that gap — an affordable, mobile-first business
 
 It replaces notebooks, calculators, and scattered WhatsApp notes with a unified platform that gives business owners real-time visibility into their sales, stock levels, expenses, profits, and outstanding debts.
 
-## Key Features
+# Key Features
 
 - 💰 Sales Management
   >- Multi-item cart: Add multiple products to a single sale with quantity and negotiated pricing
@@ -49,15 +49,12 @@ It replaces notebooks, calculators, and scattered WhatsApp notes with a unified 
 ## Workflow
 BizTrack-OS is very easy and direct to use by anyone under 3 minutes
 1. 🌐 Visit the app here: [BizTrack-OS](https://biztrack.streamlit.app/)
-2. 
-3. ↗️ Select a statistical tool (Datasynth, PanelStatX, EFACtor, DataCleanX) to work with
-4. 📂 Upload your panel dataset (CSV or excel file) in the side bar/main interface
-5. ⚙️ Configure the system and run analysis in the sidebar
-6. 🔍 View Results and Explore (use AI-Explainer where applicable)
-7. 📥 Export Data/Result
-> Note: Access key🔑 is required to be able to:
-  - Use the AI-powered explainer feature
-  - Download of analysis report. Without access key, these features are not permitted but analysis will run.
+2. Sign-up using Full Name, Business Name, Email, and Password 
+3. From the sideba, go to:
+>- Go to Inventory and Enter your product
+>- Record Sales and Download Receipt
+5. Track your Business Performance 
+
 
 --- 
 👉 Star this repo if you find it useful
