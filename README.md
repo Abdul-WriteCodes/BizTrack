@@ -5,6 +5,66 @@ Supabase Auth + RLS-secured client-side queries, packaged for the Play Store
 via TWA. Targets the **same live Supabase project** you're already running
 in production — nothing here creates a new project or touches existing data.
 
+## Repo structure
+
+```
+biztrack-next/
+├── README.md                          # setup + migration strategy + build order
+├── .env.local.example
+│
+├── src/
+│   ├── app/
+│   │   ├── page.tsx                   # redirects → /dashboard
+│   │   ├── layout.tsx                 # root layout, fonts, PWA metadata
+│   │   ├── globals.css                # design tokens (ink/paper/brass palette)
+│   │   │
+│   │   ├── (auth)/
+│   │   │   ├── login/page.tsx         # legacy bridge → signInWithPassword
+│   │   │   └── signup/
+│   │   │       ├── page.tsx           # trial signup form
+│   │   │       └── actions.ts         # server action: creates users/business row
+│   │   │
+│   │   └── (app)/                     # authenticated shell
+│   │       ├── layout.tsx             # loads profile, redirects if signed out
+│   │       ├── dashboard/page.tsx     # real vertical slice — live KPIs
+│   │       ├── sales/page.tsx         # stub
+│   │       ├── inventory/page.tsx     # stub
+│   │       ├── cashbook/page.tsx      # stub
+│   │       ├── debts/page.tsx         # stub
+│   │       ├── health/page.tsx        # stub
+│   │       ├── admin/page.tsx         # stub (admin-only nav link)
+│   │       └── settings/billing/page.tsx  # stub
+│   │
+│   ├── components/
+│   │   ├── layout/
+│   │   │   ├── sidebar.tsx            # nav, role-aware
+│   │   │   ├── topbar.tsx             # business name, plan status pill
+│   │   │   └── sign-out-button.tsx
+│   │   └── ui/
+│   │       └── primitives.tsx         # Button, Input, Label, Card
+│   │
+│   ├── lib/
+│   │   ├── countries.ts               # 25-country pricing/currency config
+│   │   └── supabase/
+│   │       ├── client.ts              # browser client (anon key, RLS)
+│   │       ├── server.ts              # server client (RSC/Server Actions)
+│   │       └── middleware.ts          # session refresh + route protection
+│   │
+│   ├── middleware.ts                  # wires up the Supabase session middleware
+│   └── types/database.ts              # placeholder — regenerate from your project
+│
+└── supabase/
+    ├── migrations/
+    │   └── 0001_auth_link_and_rls.sql # additive: auth_user_id + RLS policies
+    └── functions/
+        └── legacy-login/index.ts      # bcrypt bridge → Supabase Auth
+```
+
+(Stock Next.js boilerplate — `package.json`, `next.config.ts`, `eslint.config.mjs`,
+`public/*.svg` placeholder icons, `AGENTS.md`/`CLAUDE.md`, `.gitignore` — is left
+out of the tree above for readability but is unchanged from `create-next-app`
+defaults.)
+
 ## What's built
 
 - **Auth migration bridge** (`supabase/functions/legacy-login`) — lets your
