@@ -28,7 +28,13 @@ biztrack-next/
 │   │       ├── layout.tsx             # loads profile, redirects if signed out
 │   │       ├── dashboard/page.tsx     # real vertical slice — live KPIs
 │   │       ├── sales/page.tsx         # stub
-│   │       ├── inventory/page.tsx     # stub
+│   │       ├── inventory/             # products, restock, suppliers — built
+│   │       │   ├── page.tsx           # products table + search + add/edit
+│   │       │   ├── actions.ts         # server actions: products/restock/suppliers
+│   │       │   ├── product-form.tsx
+│   │       │   ├── products-table.tsx
+│   │       │   ├── restock/page.tsx + restock-form.tsx
+│   │       │   └── suppliers/page.tsx + suppliers-table.tsx
 │   │       ├── cashbook/page.tsx      # stub
 │   │       ├── debts/page.tsx         # stub
 │   │       ├── health/page.tsx        # stub
@@ -143,7 +149,11 @@ cp .env.local.example .env.local   # fill in your existing project's URL + anon 
 Each module below already has a route + RLS-scoped Supabase access ready;
 what's missing is the actual UI/logic, ported from `apps/*.py`:
 
-1. **Inventory** — products CRUD, restock log, suppliers, low-stock/expiry
+1. **Inventory** ✅ — products CRUD (with live margin preview), restock
+   (updates stock + audit log + cashbook mirror-write), suppliers CRUD,
+   low-stock badges on the dashboard and products table. Not yet ported:
+   expiry-date warnings and stockout-velocity projections from the old
+   `compute_insights`.
 2. **Sales** — cart with lump-sum pricing mode, PDF receipt generation
    (swap ReportLab for `@react-pdf/renderer` or a server route that
    streams a PDF), WhatsApp share link, PIN-gated void + stock reversal
