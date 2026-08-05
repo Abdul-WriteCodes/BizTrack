@@ -1,9 +1,16 @@
 import { createClient } from "@/lib/supabase/server";
 import { Card } from "@/components/ui/primitives";
+import { fmtMoney } from "@/lib/format";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
   const today = new Date().toISOString().slice(0, 10);
+
+  const { data: profile } = await supabase
+    .from("users")
+    .select("currency_symbol")
+    .single();
+  const currency = profile?.currency_symbol ?? "₦";
 
   // Every query below is scoped automatically by RLS (business_id =
   // current_business_id()) — no manual business_id filtering needed.
@@ -11,19 +18,22 @@ export default async function DashboardPage() {
     supabase.from("sales").select("total_amount").gte("created_at", today),
     supabase
       .from("cashbook_entries")
-      .select("amount, entry_type")
+      .select("amount, direction")
       .order("entry_date", { ascending: false })
       .limit(200),
-    supabase.from("products").select("product_id, name, quantity, reorder_level").limit(500),
+    supabase
+      .from("products")
+      .select("product_id, product_name, stock_quantity, reorder_level")
+      .limit(500),
   ]);
 
   const salesToday = (todaySales ?? []).reduce((sum, r) => sum + (Number(r.total_amount) || 0), 0);
   const balance = (cashbook ?? []).reduce(
-    (sum, r) => sum + (r.entry_type === "in" ? Number(r.amount) : -Number(r.amount)),
+    (sum, r) => sum + (r.direction === "In" ? Number(r.amount) : -Number(r.amount)),
     0
   );
   const lowStockItems = (lowStock ?? []).filter(
-    (p) => (p.quantity ?? 0) <= (p.reorder_level ?? 0)
+    (p) => (p.stock_quantity ?? 0) <= (p.reorder_level ?? 0)
   );
 
   return (
@@ -34,8 +44,8 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Kpi label="Sales today" value={salesToday.toLocaleString()} accent="jade" />
-        <Kpi label="Cash balance" value={balance.toLocaleString()} accent="brass" />
+        <Kpi label="Sales today" value={fmtMoney(salesToday, currency)} accent="jade" />
+        <Kpi label="Cash balance" value={fmtMoney(balance, currency)} accent="brass" />
         <Kpi label="Low stock items" value={String(lowStockItems.length)} accent="ruby" />
       </div>
 
@@ -47,8 +57,8 @@ export default async function DashboardPage() {
           <ul className="divide-y divide-border">
             {lowStockItems.slice(0, 8).map((p) => (
               <li key={p.product_id} className="py-2 flex justify-between text-sm">
-                <span>{p.name}</span>
-                <span className="text-ruby-500">{p.quantity} left</span>
+                <span>{p.product_name}</span>
+                <span className="text-ruby-500">{p.stock_quantity} left</span>
               </li>
             ))}
           </ul>
