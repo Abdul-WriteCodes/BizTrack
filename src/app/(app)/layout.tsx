@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import Sidebar from "@/components/layout/sidebar";
 import Topbar from "@/components/layout/topbar";
 import LockedScreen from "@/components/layout/locked-screen";
+import { daysUntil } from "@/lib/format";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -23,6 +24,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const role = profile?.role ?? "owner";
   const isAdmin = role === "admin";
   let status = profile?.plan_status ?? "active";
+  const daysLeft = daysUntil(profile?.subscription_end ?? null);
 
   // Mirrors the original app's check_access(): a lapsed subscription
   // auto-flips to "expired" the next time the owner loads the app. A
@@ -59,6 +61,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           fullName={profile?.full_name ?? user.email ?? ""}
           planStatus={profile?.plan_status ?? "active"}
           subscriptionEnd={profile?.subscription_end ?? null}
+          daysLeft={daysLeft}
+          isAdmin={isAdmin}
         />
         <main className="flex-1 p-4 md:p-8 max-w-6xl w-full mx-auto">{children}</main>
       </div>
