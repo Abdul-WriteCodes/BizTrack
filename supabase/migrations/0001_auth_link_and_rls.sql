@@ -81,7 +81,7 @@ create policy "users_select_own" on public.users
 
 drop policy if exists "users_update_own" on public.users;
 create policy "users_update_own" on public.users
-  for update using (auth_user_id = auth.uid());
+  for update using (auth_user_id = auth.uid() or public.is_admin());
 
 -- Lets a freshly-signed-up auth user create their own business/profile
 -- row exactly once, self-linked. legacy-login and any other admin path
@@ -171,6 +171,13 @@ alter table public.payments enable row level security;
 drop policy if exists "payments_read" on public.payments;
 create policy "payments_read" on public.payments
   for select using (business_id = public.current_business_id() or public.is_admin());
+
+-- Admin activates/renews subscriptions manually (no payment-gateway
+-- webhook in this build — matches the original app's manual-approval
+-- flow) and logs the platform revenue ledger entry at the same time.
+drop policy if exists "payments_admin_insert" on public.payments;
+create policy "payments_admin_insert" on public.payments
+  for insert with check (public.is_admin());
 
 -- ══════════════════════════════════════════════════════════════════════════
 -- NOTE: run this in the Supabase SQL editor (or `supabase db push`) against
