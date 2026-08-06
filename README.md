@@ -39,7 +39,12 @@ biztrack-next/
 │   │       │   ├── products-table.tsx
 │   │       │   ├── restock/page.tsx + restock-form.tsx
 │   │       │   └── suppliers/page.tsx + suppliers-table.tsx
-│   │       ├── cashbook/page.tsx      # stub
+│   │       ├── cashbook/              # snapshot, ledger, manual entry — built
+│   │       │   ├── page.tsx           # period-scoped snapshot + full ledger
+│   │       │   ├── actions.ts         # server action: manual entry
+│   │       │   ├── period-tabs.tsx
+│   │       │   ├── add-entry-button.tsx
+│   │       │   └── manual-entry-form.tsx
 │   │       ├── debts/page.tsx         # stub
 │   │       ├── health/page.tsx        # stub
 │   │       ├── admin/page.tsx         # stub (admin-only nav link)
@@ -170,7 +175,12 @@ what's missing is the actual UI/logic, ported from `apps/*.py`:
    per-owner Void PIN setting); it's a plain confirm dialog for now. PDF
    receipts and WhatsApp share aren't built — `/sales/new` shows an
    on-screen confirmation only.
-3. **Cashbook** — the snapshot card + period selector + full ledger
+3. **Cashbook** ✅ — snapshot (opening/in/out/closing balance) for
+   Today/This week/This month/All time, payment-method composition,
+   entry-type breakdown, manual entry (owner drawings, capital top-ups,
+   bank deposits), full ledger. Reads the same `cashbook_entries` rows
+   Sales and Inventory already mirror-write into — nothing new to wire up
+   there.
 4. **Debts** — ledger + part-payments
 5. **Business health** — expense tracking, trend charts (`recharts` is
    already installed)
