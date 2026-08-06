@@ -45,8 +45,17 @@ biztrack-next/
 │   │       │   ├── period-tabs.tsx
 │   │       │   ├── add-entry-button.tsx
 │   │       │   └── manual-entry-form.tsx
-│   │       ├── debts/page.tsx         # stub
-│   │       ├── health/page.tsx        # stub
+│   │       ├── debts/                 # ledger, part-payments — built
+│   │       │   ├── page.tsx
+│   │       │   ├── actions.ts         # server action: record payment
+│   │       │   ├── debts-table.tsx
+│   │       │   └── payment-form.tsx
+│   │       ├── health/                # expenses + trends — built
+│   │       │   ├── page.tsx           # month KPIs + 6-month chart
+│   │       │   ├── actions.ts         # server actions: expense CRUD
+│   │       │   ├── expense-form.tsx
+│   │       │   ├── expenses-table.tsx
+│   │       │   └── trend-chart.tsx
 │   │       ├── admin/page.tsx         # stub (admin-only nav link)
 │   │       └── settings/billing/page.tsx  # stub
 │   │
@@ -181,9 +190,18 @@ what's missing is the actual UI/logic, ported from `apps/*.py`:
    bank deposits), full ledger. Reads the same `cashbook_entries` rows
    Sales and Inventory already mirror-write into — nothing new to wire up
    there.
-4. **Debts** — ledger + part-payments
-5. **Business health** — expense tracking, trend charts (`recharts` is
-   already installed)
+4. **Debts** ✅ — outstanding/all filter, part-payments (updates
+   amount_paid/balance/status on the debt, logs a `debt_payments` row, and
+   mirrors the collection into the cashbook as real cash-in — a debt isn't
+   cash until it's actually collected). Debts are created automatically by
+   Sales on partial/credit transactions; nothing new to wire up there
+   either.
+5. **Business health** ✅ — expenses (log/delete, mirrored to cashbook as
+   cash-out), month KPIs (revenue, gross profit, expenses, net profit), a
+   6-month revenue-vs-expenses trend chart. Not yet ported: product-level
+   analysis, slow-movers, and stockout-velocity projections from the
+   original `compute_insights` — those need Inventory's sales-velocity
+   data joined in, left for a follow-up pass.
 6. **Billing** — Flutterwave links per country/plan, webhook → Edge
    Function (service role) to flip `plan_status`, since that write must
    never happen from the client
