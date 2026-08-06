@@ -27,7 +27,11 @@ biztrack-next/
 │   │   └── (app)/                     # authenticated shell
 │   │       ├── layout.tsx             # loads profile, redirects if signed out
 │   │       ├── dashboard/page.tsx     # real vertical slice — live KPIs
-│   │       ├── sales/page.tsx         # stub
+│   │       ├── sales/                 # cart, checkout, history, void — built
+│   │       │   ├── page.tsx           # overview: KPIs + recent sales
+│   │       │   ├── actions.ts         # server actions: checkout / void
+│   │       │   ├── new/page.tsx + cart-builder.tsx
+│   │       │   └── history/page.tsx + void-button.tsx
 │   │       ├── inventory/             # products, restock, suppliers — built
 │   │       │   ├── page.tsx           # products table + search + add/edit
 │   │       │   ├── actions.ts         # server actions: products/restock/suppliers
@@ -154,9 +158,18 @@ what's missing is the actual UI/logic, ported from `apps/*.py`:
    low-stock badges on the dashboard and products table. Not yet ported:
    expiry-date warnings and stockout-velocity projections from the old
    `compute_insights`.
-2. **Sales** — cart with lump-sum pricing mode, PDF receipt generation
-   (swap ReportLab for `@react-pdf/renderer` or a server route that
-   streams a PDF), WhatsApp share link, PIN-gated void + stock reversal
+2. **Sales** ✅ — search-to-cart builder with per-line negotiated pricing
+   (auto-flags a discount when unit price is dropped below the catalogue
+   price), full/partial/credit payment status, partial+credit sales
+   auto-create a debt, cashbook mirror-write for cash actually collected,
+   pre-commit stock guard against concurrent oversells, sales history with
+   void (restores stock, deletes the sale/items/cashbook entry/debt).
+   Simplified vs. the original for now: sub-unit/base-unit fractional
+   selling (e.g. selling 3 of 12 units in a bag) isn't ported — everything
+   sells in whole base units. Void isn't PIN-gated yet (the original had a
+   per-owner Void PIN setting); it's a plain confirm dialog for now. PDF
+   receipts and WhatsApp share aren't built — `/sales/new` shows an
+   on-screen confirmation only.
 3. **Cashbook** — the snapshot card + period selector + full ledger
 4. **Debts** — ledger + part-payments
 5. **Business health** — expense tracking, trend charts (`recharts` is
