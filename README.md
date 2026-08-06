@@ -25,7 +25,7 @@ biztrack-next/
 │   │   │       └── actions.ts         # server action: creates users/business row
 │   │   │
 │   │   └── (app)/                     # authenticated shell
-│   │       ├── layout.tsx             # loads profile, redirects if signed out
+│   │       ├── layout.tsx             # loads profile, gates on plan_status, redirects if signed out
 │   │       ├── dashboard/page.tsx     # real vertical slice — live KPIs
 │   │       ├── sales/                 # cart, checkout, history, void — built
 │   │       │   ├── page.tsx           # overview: KPIs + recent sales
@@ -56,13 +56,17 @@ biztrack-next/
 │   │       │   ├── expense-form.tsx
 │   │       │   ├── expenses-table.tsx
 │   │       │   └── trend-chart.tsx
-│   │       ├── admin/page.tsx         # stub (admin-only nav link)
+│   │       ├── admin/                 # cross-tenant approve/renew — built
+│   │       │   ├── page.tsx
+│   │       │   ├── actions.ts         # server actions: activate/confirm renewal
+│   │       │   └── action-buttons.tsx
 │   │       └── settings/billing/page.tsx  # stub
 │   │
 │   ├── components/
 │   │   ├── layout/
 │   │   │   ├── sidebar.tsx            # nav, role-aware
 │   │   │   ├── topbar.tsx             # business name, plan status pill
+│   │   │   ├── locked-screen.tsx      # pending/suspended/expired lockout
 │   │   │   └── sign-out-button.tsx
 │   │   └── ui/
 │   │       └── primitives.tsx         # Button, Input, Label, Card
@@ -205,8 +209,46 @@ what's missing is the actual UI/logic, ported from `apps/*.py`:
 6. **Billing** — Flutterwave links per country/plan, webhook → Edge
    Function (service role) to flip `plan_status`, since that write must
    never happen from the client
-7. **Admin panel** — cross-tenant views, gated by `is_admin()` (already in
-   the RLS migration)
+7. **Admin panel** ✅ — while porting this I found the original app never
+   actually has a payment webhook: activation, renewal, and deactivation
+   are all manually done by an admin, after the owner pays via a
+   Flutterwave link and tells you (or requests renewal in-app). This
+   build matches that exactly, on purpose (confirmed — not adding an
+   automated webhook):
+   - **Pending activation** (new paid signups) and **Renewal requests**
+     (existing users renewing) each get an approve button that extends
+     `subscription_end`, flips `plan_status` to `active`, and logs a
+     `payments` row.
+   - **Deactivate** (on any active business) sets `plan_status` straight
+     to `expired` — the same state a naturally-lapsed subscription lands
+     in. No separate "suspended" state, no reason field — matches the
+     original 1:1.
+   - **Reactivate** (on any `expired` business) is treated as a fresh
+     paid term, not a free unlock: admin picks monthly/yearly, it sets a
+     new `subscription_start`/`subscription_end` from today and logs a
+     `payments` row noted "Reactivation" — same as the original.
+   - A `pending_payment` or `expired` business is locked out of the whole
+     app the next time anyone there loads it — `(app)/layout.tsx` checks
+     `plan_status` on every request (mirroring the original's
+     `check_access()`, including the same auto-flip to `expired` once
+     `subscription_end` has passed) and renders a locked screen instead
+     of the sidebar/dashboard, with a pay link and a "Sign out" way out.
+     Admins always bypass this check.
+   - Also lists all businesses with plan/status/expiry.
+   Not ported: MRR/growth charts, churn alerts, password-reset queue,
+   user-activity log — the original's other admin tabs, left for later
+   since Pending + Renewals + Active/Deactivated + All Users now cover
+   the full approve/renew/deactivate/reactivate loop.
+   **Two new RLS policies** were added to
+   `supabase/migrations/0001_auth_link_and_rls.sql` to support this
+   (admin can update any `users` row; admin can insert into `payments`)
+   — if you already ran an earlier copy of that file, re-run the updated
+   one (both new statements are additive `create policy` calls, safe to
+   run again).
+   **Getting your own account into the admin role**: sign up normally,
+   then in the Supabase SQL editor run
+   `update public.users set role = 'admin' where email = 'you@example.com';`
+   — there's no self-service way to become admin, by design.
 
 ## TWA / Play Store packaging (once the PWA is solid)
 
