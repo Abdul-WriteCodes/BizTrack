@@ -60,7 +60,10 @@ biztrack-next/
 │   │       │   ├── page.tsx
 │   │       │   ├── actions.ts         # server actions: activate/confirm renewal
 │   │       │   └── action-buttons.tsx
-│   │       └── settings/billing/page.tsx  # stub
+│   │       └── settings/billing/      # plan status, renewal request — built
+│   │           ├── page.tsx
+│   │           ├── actions.ts         # server actions: request/cancel renewal
+│   │           └── plan-panel.tsx
 │   │
 │   ├── components/
 │   │   ├── layout/
@@ -206,9 +209,21 @@ what's missing is the actual UI/logic, ported from `apps/*.py`:
    analysis, slow-movers, and stockout-velocity projections from the
    original `compute_insights` — those need Inventory's sales-velocity
    data joined in, left for a follow-up pass.
-6. **Billing** — Flutterwave links per country/plan, webhook → Edge
-   Function (service role) to flip `plan_status`, since that write must
-   never happen from the client
+6. **Billing** ✅ — the owner-facing half of the manual-approval loop
+   Admin panel closes: `/settings/billing` shows current plan/status/days
+   remaining, and a self-service "Renew plan" flow that matches the
+   original's `page_settings()` exactly — pick monthly/yearly, a confirm
+   step ("you're about to request a renewal for X, continue to payment?"),
+   then it sets `renewal_requested`/`renewal_requested_plan`/
+   `renewal_requested_at` on the caller's own row (their own `users`
+   row — permitted by the existing `users_update_own` RLS policy, no
+   migration change needed) and shows the Flutterwave pay link. While a
+   request is pending it shows an "awaiting admin confirmation" banner
+   with the pay link still available, plus a cancel option. The topbar
+   also carries the original's expiry alert — a calm green chip normally,
+   flipping to a red "N days left / expired — renew now" banner once 5
+   days or fewer remain, linking straight to this page. Skipped for admin
+   accounts, same as the original.
 7. **Admin panel** ✅ — while porting this I found the original app never
    actually has a payment webhook: activation, renewal, and deactivation
    are all manually done by an admin, after the owner pays via a
