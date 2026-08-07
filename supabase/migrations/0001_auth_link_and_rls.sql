@@ -48,6 +48,19 @@ as $$
   select business_id from public.users where auth_user_id = auth.uid()
 $$;
 
+-- payments is keyed by user_id, not business_id (it's a flat platform
+-- revenue ledger, not a per-business table like the others) — this is
+-- what payments_read below actually needs.
+create or replace function public.current_user_id()
+returns text
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select user_id from public.users where auth_user_id = auth.uid()
+$$;
+
 create or replace function public.current_user_role()
 returns text
 language sql
@@ -164,13 +177,12 @@ create policy "user_activity_insert" on public.user_activity
   for insert with check (business_id = public.current_business_id());
 
 -- payments -------------------------------------------------------------
--- billing rows are sensitive; owners read their own, admin reads all.
--- Inserts stay service-role-only (webhook-driven via Edge Function) —
--- no client insert policy is added on purpose.
+-- billing rows are sensitive; owners read their own (matched by user_id
+-- — this table has no business_id column), admin reads all.
 alter table public.payments enable row level security;
 drop policy if exists "payments_read" on public.payments;
 create policy "payments_read" on public.payments
-  for select using (business_id = public.current_business_id() or public.is_admin());
+  for select using (user_id = public.current_user_id() or public.is_admin());
 
 -- Admin activates/renews subscriptions manually (no payment-gateway
 -- webhook in this build — matches the original app's manual-approval
